@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: data-rendering-server
+
+  cloud:
+    config:
+      uri: http://config:8888
+      fail-fast: true
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: r2dbc:postgresql://data-db:5432/data-db
+    username: owner
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      defer-datasource-initialization: false
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+
+  r2dbc:
+    url: r2dbc:postgresql://data-db:5432/data-db
+    username: owner
+    password: password
+
+  sql:
+    init:
+      mode: never
+      schema-locations: classpath*:schema.sql
+      data-locations: data.sql
+

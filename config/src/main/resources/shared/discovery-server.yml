@@ -1,0 +1,9 @@
+server:
+  port: 8761
+
+#eureka:
+#  client:
+#    #    само приложение, как и другие микросервисы, будет зарегистрировано в Eureka server
+#    register-with-eureka: true
+#    #    будет ли Eureka client получать данные из Service registry
+#    fetch-registry: false

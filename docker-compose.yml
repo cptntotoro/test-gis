@@ -1,0 +1,70 @@
+version: '2.1'
+
+services:
+  config:
+    build: ./config
+    container_name: config
+    image: config
+    restart: always
+    ports:
+      - 8888:8888
+
+  discovery:
+    build: ./discovery
+    container_name: discovery
+    image: discovery
+    restart: always
+    ports:
+      - 8761:8761
+    depends_on:
+      config:
+        condition: service_healthy
+
+  data-db:
+    container_name: data-db
+    image: postgis/postgis:15-3.3
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=data-db
+      - POSTGRES_USER=owner
+      - POSTGRES_PASSWORD=password
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    image: gateway
+    restart: always
+    ports:
+      - 6060:6060
+    depends_on:
+      config:
+        condition: service_healthy
+      discovery:
+        condition: service_healthy
+
+  data-rendering-service:
+    build: ./data-rendering-service
+    container_name: data-rendering-service
+    image: data-rendering-service
+    restart: always
+    ports:
+      - 5050:5050
+    depends_on:
+      config:
+        condition: service_healthy
+      discovery:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=r2dbc:postgresql://data-db:5432/data-db
+      - POSTGRES_USER=owner
+      - POSTGRES_PASSWORD=password
+      - DB_NAME=data-db
+      - SPRING_DATASOURCE_USERNAME=owner
+      - SPRING_DATASOURCE_PASSWORD=password
+      - DB_HOST=data-db
+      - DB_PORT=5432

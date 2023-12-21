@@ -1,0 +1,22 @@
+#server.port=7070
+
+spring:
+  application:
+    name: discovery-server
+  cloud:
+    config:
+      #      Для запуска в Докере
+      uri: http://config:8888
+
+      #      Для запуска локально
+      #      uri: http://localhost:8888
+      fail-fast: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    server:
+      waitTimeInMsWhenSyncEmpty: 0

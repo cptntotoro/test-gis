@@ -1,0 +1,9 @@
+server:
+  port: 5050
+
+  datasource:
+    dbcp2:
+      url: r2dbc:postgresql://data-db:5432/data-db?locale=en_US
+      driver-class-name: org.postgresql.Driver
+      username: postgres
+      password: 1
