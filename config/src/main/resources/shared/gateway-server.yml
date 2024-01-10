@@ -1,0 +1,13 @@
+server:
+  port: 6060
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: data-rendering
+          uri: lb://DATA-RENDERING-SERVER
+          predicates:
+            - Path=/data-rendering/**
+          filters:
+            - StripPrefix=1
