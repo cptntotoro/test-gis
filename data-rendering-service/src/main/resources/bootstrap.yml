@@ -29,6 +29,10 @@ spring:
   sql:
     init:
       mode: never
-      schema-locations: classpath*:schema.sql
-      data-locations: data.sql
 
+eureka:
+  instance:
+      prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true

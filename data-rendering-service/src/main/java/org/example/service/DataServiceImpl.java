@@ -25,7 +25,7 @@ public class DataServiceImpl implements DataService {
         double maxy = Double.parseDouble(bbox[3]);
 
         WKBReader wkbReader = new WKBReader();
-        return entityRepository.getUserRectangleAreaEntities(minx, miny, maxx, maxy, 4326).map(hexString -> {
+        return entityRepository.getUserRectangleAreaEntities(minx, miny, maxx, maxy, 3857).map(hexString -> {
             try {
                 Geometry geometry = wkbReader.read(WKBReader.hexToBytes(hexString.substring(2)));
                 return geometry;

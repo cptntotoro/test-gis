@@ -1,10 +1,8 @@
 package org.example.controller;
 
 import org.example.exception.IncorrectRequestException;
-import org.example.model.Entity;
 import org.example.service.DataService;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.LineString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +32,4 @@ public class DataController {
         return ResponseEntity.ok().body(dataService.getEntities(width, height, bboxString).map(Geometry::toString));
     }
 
-    @GetMapping
-    @RequestMapping("/all")
-    public Flux<String> getAll() {
-        return dataService.findAll();
-    }
 }

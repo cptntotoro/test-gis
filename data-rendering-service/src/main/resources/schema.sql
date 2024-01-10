@@ -1,7 +1,0 @@
-CREATE TABLE IF NOT EXISTS entity
-(
-    id serial NOT NULL, -- GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-    geom geometry(linestring, 4326) NOT NULL, -- 3857
-    color text NOT NULL,
-    CONSTRAINT entity_pkey PRIMARY KEY(id)
-);
