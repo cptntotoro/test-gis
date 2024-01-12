@@ -7,7 +7,7 @@
 
 ## Как проверить (пока нет постмана)
 
-После запуска в Докере открыть страницу в браузере: http://localhost:6060/data-rendering/render?width=0&height=0&bboxString=0,47,0,52.
+После запуска в Докере открыть страницу в браузере: http://localhost:6060/data-rendering/render?width=0&height=0&bboxString=0,47,0,52
 
 ## Задача
 

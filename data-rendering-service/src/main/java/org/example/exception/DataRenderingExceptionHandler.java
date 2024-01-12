@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class DataRenderingExceptionHandler {
 
-    private Logger logger = LoggerFactory.getLogger(DataRenderingExceptionHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(DataRenderingExceptionHandler.class);
 
     @ExceptionHandler(IncorrectRequestException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)

@@ -19,13 +19,13 @@ public class DataServiceImpl implements DataService {
     public Flux<Geometry> getEntities(Integer width, Integer height, String bboxString) {
 
         String[] bbox = bboxString.split(",");
-        double minx = Double.parseDouble(bbox[0]);
-        double miny = Double.parseDouble(bbox[1]);
-        double maxx = Double.parseDouble(bbox[2]);
-        double maxy = Double.parseDouble(bbox[3]);
+        double minX = Double.parseDouble(bbox[0]);
+        double minY = Double.parseDouble(bbox[1]);
+        double maxX = Double.parseDouble(bbox[2]);
+        double maxY = Double.parseDouble(bbox[3]);
 
         WKBReader wkbReader = new WKBReader();
-        return entityRepository.getUserRectangleAreaEntities(minx, miny, maxx, maxy, 3857).map(hexString -> {
+        return entityRepository.getUserRectangleAreaEntities(minX, minY, maxX, maxY, 3857).map(hexString -> {
             try {
                 Geometry geometry = wkbReader.read(WKBReader.hexToBytes(hexString.substring(2)));
                 return geometry;
@@ -35,8 +35,4 @@ public class DataServiceImpl implements DataService {
         });
     }
 
-    @Override
-    public Flux<String> findAll() {
-        return entityRepository.getAl();
-    }
 }
