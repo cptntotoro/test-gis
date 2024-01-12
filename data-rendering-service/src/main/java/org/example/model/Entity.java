@@ -17,18 +17,6 @@ public class Entity {
         this.color = color;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Geometry getGeom() {
-        return geom;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
 }
 
 
