@@ -1,4 +1,7 @@
 spring:
+  mvc:
+    view:
+      suffix: .html
   application:
     name: data-rendering-server
 
@@ -14,6 +17,7 @@ spring:
     password: password
 
   jpa:
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
     hibernate:
       ddl-auto: none
     properties:

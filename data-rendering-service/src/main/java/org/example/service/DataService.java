@@ -1,8 +1,10 @@
 package org.example.service;
 
-import org.locationtech.jts.geom.Geometry;
+import org.example.model.Entity;
+import org.locationtech.jts.geom.LineString;
 import reactor.core.publisher.Flux;
 
 public interface DataService {
-    Flux<Geometry> getEntities(Integer width, Integer height, String bbox);
+    Flux<LineString> getGeoms(Integer width, Integer height, String bbox);
+    Flux<Entity> getEntities(Integer width, Integer height, String bbox);
 }
