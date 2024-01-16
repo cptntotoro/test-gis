@@ -1,0 +1,21 @@
+.map-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.map {
+    width: 800px;
+    height: 800px;
+}
+
+#map:focus {
+    outline: #4A74A8 solid 0.15em;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 160px;
+    margin-top: 5px;
+}
