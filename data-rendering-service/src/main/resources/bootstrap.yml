@@ -16,19 +16,11 @@ spring:
     username: owner
     password: password
 
-  jpa:
-    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
-    hibernate:
-      ddl-auto: none
-    properties:
-      defer-datasource-initialization: false
-      hibernate:
-        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
-
   r2dbc:
     url: r2dbc:postgresql://data-db:5432/data-db
     username: owner
     password: password
+
 
   sql:
     init:

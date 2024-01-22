@@ -1,13 +1,14 @@
 package org.example.controller;
 
-import org.example.exception.IncorrectRequestException;
 import org.example.model.Entity;
 import org.example.service.DataService;
-import org.geotools.geojson.geom.GeometryJSON;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryCollection;
-import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.util.AffineTransformation;
+import org.locationtech.jts.geom.util.AffineTransformationFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.StringWriter;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Controller
@@ -25,34 +30,6 @@ public class DataController {
 
     @Autowired
     private DataService dataService;
-
-    @GetMapping
-    @RequestMapping(path = "/render")
-    @ResponseBody
-    public String getData(@RequestParam(required = false) Integer width,
-                          @RequestParam(required = false) Integer height,
-                          @RequestParam String bboxString) {
-
-        if (bboxString == null || bboxString.isEmpty()) {
-            throw new IncorrectRequestException("bboxString parameter must not be empty.");
-        }
-
-        return convertToGeoJson(new GeometryCollection(GeometryFactory.toGeometryArray(
-                    StreamSupport.stream(dataService.getGeoms(width, height, bboxString).toIterable().spliterator(), false).collect(Collectors.toList())),
-                    new GeometryFactory()));
-    }
-
-    private static String convertToGeoJson(Geometry geometry) {
-        GeometryJSON geometryJson = new GeometryJSON();
-        String msg;
-        try (StringWriter writer = new StringWriter();) {
-            geometryJson.write(geometry, writer);
-            msg = writer.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("convertToGeoJson exception", e);
-        }
-        return msg;
-    }
 
     @GetMapping(value = "/")
     public ModelAndView index() {
@@ -62,11 +39,55 @@ public class DataController {
     }
 
     @GetMapping
-    @RequestMapping(path = "/render2")
+    @RequestMapping(path = "/render")
     @ResponseBody
-    public List<Entity> getData2(@RequestParam(required = false) Integer width,
-                                 @RequestParam(required = false) Integer height,
-                                 @RequestParam String bboxString) {
-        return StreamSupport.stream(dataService.getEntities(width, height, bboxString).toIterable().spliterator(), false).collect(Collectors.toList());
+    public ResponseEntity<byte[]> getData(@RequestParam(required = false) Integer width,
+                                          @RequestParam(required = false) Integer height,
+                                          @RequestParam String bboxString) {
+
+        String[] bbox = bboxString.split(",");
+        double minX = Double.parseDouble(bbox[0]);
+        double minY = Double.parseDouble(bbox[1]);
+        double maxX = Double.parseDouble(bbox[2]);
+        double maxY = Double.parseDouble(bbox[3]);
+
+        AffineTransformation at = AffineTransformationFactory.createFromControlVectors(
+                new Coordinate(minX,minY),
+                new Coordinate(maxX,maxY),
+                new Coordinate(maxX,minY),
+                new Coordinate(0,0),
+                new Coordinate(width,height),
+                new Coordinate(width,0)
+        );
+
+        BufferedImage bImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = bImg.createGraphics();
+        g2d.setComposite(AlphaComposite.Clear);
+        g2d.fillRect(0, 0, width, height);
+        g2d.setComposite(AlphaComposite.Src);
+        g2d.setStroke(new BasicStroke(4f));
+
+        List<Entity> entityList = StreamSupport.stream(dataService.getEntities(minX, minY, maxX, maxY)
+                .toIterable().spliterator(), false).toList();
+
+        entityList.forEach(entity -> {
+            g2d.setColor(Color.decode(entity.getColor()));
+            Coordinate[] coordinates = at.transform(entity.getGeom()).getCoordinates();
+            g2d.draw(new Line2D.Double(coordinates[0].x, coordinates[0].y, coordinates[1].x, coordinates[1].y));
+        });
+
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(bImg , "png", byteArrayOutputStream);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.IMAGE_PNG)
+                    .body(byteArrayOutputStream.toByteArray());
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 }

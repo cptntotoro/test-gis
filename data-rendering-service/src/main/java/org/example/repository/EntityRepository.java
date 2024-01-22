@@ -9,9 +9,6 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface EntityRepository extends R2dbcRepository<Entity, Long> {
 
-    @Query(value = "SELECT ST_AsBinary(geom) FROM entity WHERE ST_Intersects(geom, ST_MakeEnvelope(:minX, :minY, :maxX, :maxY, :srid))")
-    Flux<String> getUserRectangleAreaGeoms(double minX, double minY, double maxX, double maxY, int srid);
-
     @Query(value = "SELECT id, geom, color FROM entity WHERE ST_Intersects(geom, ST_MakeEnvelope(:minX, :minY, :maxX, :maxY, :srid))")
     Flux<Entity> getUserRectangleAreaEntities(double minX, double minY, double maxX, double maxY, int srid);
 }

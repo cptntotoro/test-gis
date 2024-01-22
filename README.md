@@ -1,5 +1,5 @@
 # test-gis - микросервисное приложение для рендеринга картографических данных
-Java(Core, Java2D), Spring(Boot, Web, Cloud, Data R2DBC), Project Reactor, PostgreSQL, PostGIS, Maven, Docker
+Java (Core, Java2D), Spring (Boot, Web, Cloud, Data R2DBC), Project Reactor, PostgreSQL, PostGIS, Maven, Docker
 
 ## О проекте
 Приложение читает сущности в виде линий из базы данных и отображает их в браузерном клиенте на основе OpenLayers

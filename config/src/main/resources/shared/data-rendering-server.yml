@@ -1,9 +1,14 @@
 server:
   port: 5050
 
+spring:
   datasource:
-    dbcp2:
-      url: r2dbc:postgresql://data-db:5432/data-db?locale=en_US
-      driver-class-name: org.postgresql.Driver
-      username: postgres
-      password: 1
+    driverClassName: org.postgresql.Driver
+    url: r2dbc:postgresql://data-db:5432/data-db
+    username: owner
+    password: password
+
+  r2dbc:
+    url: r2dbc:postgresql://data-db:5432/data-db
+    username: owner
+    password: password
